@@ -15,6 +15,10 @@ var finalScoreEl = document.querySelector("#final-score");
 var initialsEl = document.querySelector("#initials");
 var timerEl = document.querySelector("#time");
 
+/* ---------------------------- Declare constants --------------------------- */
+const correctAudio = new Audio("assets/sfx/correct.wav");
+const incorrectAudio = new Audio("assets/sfx/incorrect.wav");
+
 /* ----------------------------- Other variables ---------------------------- */
 var score = 0; // Keep track of the score
 var timer; // Quiz timer
@@ -23,22 +27,6 @@ var timerCount = 75; // Timer for overall quiz (seconds)
 var feedbackTimerCount = 1; // Timer for displaying feedback (seconds)
 var quizQuestion; // Will hold a single quiz question that needs to be shown
 var displayedQuestions = 0; // Number of questions displayed
-
-//TODO: Remove the commented out code below
-/*
-// Create unordered list element and list items for the choices
-var listEl = document.createElement("ul");
-var li1 = document.createElement("li");
-var li2 = document.createElement("li");
-var li3 = document.createElement("li");
-var li4 = document.createElement("li");
-
-// Create buttons
-var button1 = document.createElement("button");
-var button2 = document.createElement("button");
-var button3 = document.createElement("button");
-var button4 = document.createElement("button");
-*/
 
 /* -------------------------------------------------------------------------- */
 /*               Event Listener for when Start Quiz Button is pressed         */
@@ -118,10 +106,12 @@ choicesDiv.addEventListener("click", function (event) {
     var correctAnswerText = quizQuestion.options[quizQuestion.answer];
     if (chosenOptionText === correctAnswerText) {
         displayFeedback("Correct!");
+        correctAudio.play();
         score++;
     }
     else {
         displayFeedback("Wrong!");
+        incorrectAudio.play();
         timerCount = timerCount - 10;
     }
 
