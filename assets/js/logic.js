@@ -11,8 +11,10 @@ var initialsEl = document.querySelector("#initials");
 var timerEl = document.querySelector("#time");
 
 var score = 0;
-var timer;
+var timer; // Quiz timer
+var feedbackTimer; // Feedback timer
 var timerCount = 75;
+var feedbackTimerCount = 1;
 
 // Declare a global variable that will hold a quiz question
 var quizQuestion;
@@ -79,8 +81,6 @@ submitButton.addEventListener("click", function (event) {
 
 function displayQuestion(i) {
 
-    //TODO: Hide the feedback div
-
     // Remove choices/options, presented as buttons, before displaying new ones
     removeButtons();
 
@@ -144,21 +144,26 @@ choicesDiv.addEventListener("click", function (event) {
     var correctAnswerText = quizQuestion.options[quizQuestion.answer];
     if (chosenOptionText === correctAnswerText) {
         console.log("Correct answer");
+        displayFeedback("Correct!");
         score++;
-        //TODO: Make visible the feedback div
     }
     else {
         console.log("Incorrect answer");
+        displayFeedback("Wrong!");
         timerCount = timerCount - 10;
-        //TODO: Make visible the feedback div
     }
+
+    // console.log(feedbackDiv.textContent);
 
     if (displayedQuestions === (quiz.length - 1)) {
         console.log("Have asked all the questions.");
 
-        //Hide the questions and feedback div
+        //Hide the questions div
         questionsDiv.classList.add("hide");
-        feedbackDiv.classList.add("hide");
+
+        // Stop the timer
+        clearInterval(timer);
+        timerEl.textContent = 0;
 
         //Unhide the end-screen div
         endScreenDiv.classList.remove("hide");
@@ -184,6 +189,24 @@ function startTimer() {
         if (timerCount === 0) {
             // Show the highscores page
             location.replace("./highscores.html")
+        }
+    }, 1000);
+}
+
+function displayFeedback(displayText) {
+    feedbackDiv.classList.remove("hide");
+    feedbackDiv.textContent = displayText;
+    startFeedbackTimer();
+}
+
+function startFeedbackTimer() {
+    feedbackTimer = setInterval(function () {
+        console.log(feedbackTimerCount);
+        feedbackTimerCount--;
+        if (feedbackTimerCount === 0) {
+            feedbackDiv.classList.add("hide");
+            clearInterval(feedbackTimer);
+            feedbackTimerCount = 1;
         }
     }, 1000);
 }
