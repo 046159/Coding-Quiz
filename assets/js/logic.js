@@ -44,6 +44,12 @@ startQuizButton.addEventListener("click", function () {
 submitButton.addEventListener("click", function (event) {
     var initials = initialsEl.value; // Read initials from screen
 
+    /* ----------------------- Don't allow empty initials ----------------------- */
+    if (initials === "") {
+        displayFeedback("Please enter your initials before submitting")
+        return;
+    }
+
     /* --------------------- Create an object to store later -------------------- */
     var scoreObject = {
         Initials: initials,
