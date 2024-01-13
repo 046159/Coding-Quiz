@@ -3,6 +3,11 @@ var questionsDiv = document.querySelector("#questions");
 var questionTitle = document.querySelector("#question-title");
 var choicesDiv = document.querySelector("#choices");
 var startScreenDiv = document.querySelector("#start-screen");
+var feedbackDiv = document.querySelector("#feedback");
+var endScreenDiv = document.querySelector("#end-screen");
+var finalScoreEl = document.querySelector("#final-score");
+
+var score = 0;
 
 // Create unordered list element and list items for the choices
 var listEl = document.createElement("ul");
@@ -70,6 +75,7 @@ choicesDiv.addEventListener("click", function (event) {
     var correctAnswerText = quizQuestion.options[quizQuestion.answer];
     if (chosenOptionText === correctAnswerText) {
         console.log("Correct answer");
+        score++;
         //TODO: Make visible the feedback div
     }
     else {
@@ -80,9 +86,13 @@ choicesDiv.addEventListener("click", function (event) {
     if (displayedQuestions === (quiz.length - 1)) {
         console.log("Have asked all the questions.");
 
-        //TODO: Hide the questions and feedback div
-
-        //TODO: Unhide the end-screen div
+        //Hide the questions and feedback div
+        questionsDiv.classList.add("hide");
+        feedbackDiv.classList.add("hide");
+        
+        //Unhide the end-screen div
+        endScreenDiv.classList.remove("hide");
+        finalScoreEl.textContent = score;
 
         //TODO: Log test results into localStorage
     }

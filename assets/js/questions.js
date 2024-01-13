@@ -8,5 +8,10 @@ const quiz = [
         question: "Which of these files is it important to maintain?",
         options: ["README", "IgnoreMe", "bugs.txt", "WontDo"],
         answer: "0"
+    },
+    {
+        question: "Which tool can you use to maintain source control centrally on the Internet?",
+        options: ["Gut", "Gitt", "Gunter", "Git"],
+        answer: "3"
     }
 ]
