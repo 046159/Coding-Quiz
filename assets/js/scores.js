@@ -1,4 +1,5 @@
 var highScoresEl = document.querySelector("#highscores");
+var clearButtonEl = document.querySelector("#clear");
 
 var scoresString = localStorage.getItem("scores");
 var scoresArrayRetrieved = JSON.parse(scoresString);
@@ -11,3 +12,8 @@ for (let i = 0; i < scoresArrayRetrieved.length; i++) {
     listItem.innerText = initials + " - " + score;
     highScoresEl.appendChild(listItem);
 }
+
+clearButtonEl.addEventListener("click", function (event) {
+    localStorage.removeItem("scores");
+    window.location.reload();
+})
