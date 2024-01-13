@@ -8,8 +8,11 @@ var feedbackDiv = document.querySelector("#feedback");
 var endScreenDiv = document.querySelector("#end-screen");
 var finalScoreEl = document.querySelector("#final-score");
 var initialsEl = document.querySelector("#initials");
+var timerEl = document.querySelector("#time");
 
 var score = 0;
+var timer;
+var timerCount = 75;
 
 // Declare a global variable that will hold a quiz question
 var quizQuestion;
@@ -36,6 +39,7 @@ startQuizButton.addEventListener("click", function () {
     startScreenDiv.classList.add("hide");
     questionsDiv.classList.remove("hide");
 
+    startTimer();
 
     quizQuestion = displayQuestion(displayedQuestions);
 
@@ -63,12 +67,12 @@ submitButton.addEventListener("click", function (event) {
     console.log("scoresArray");
 
     scoresArray.push(scoreObject);
-    
+
     // Log test results into localStorage
     localStorage.setItem("scores", JSON.stringify(scoresArray));
 
     // Show the highscores page
-    location.replace("./highscores.html")    
+    location.replace("./highscores.html")
 
 });
 
@@ -76,7 +80,7 @@ submitButton.addEventListener("click", function (event) {
 function displayQuestion(i) {
 
     //TODO: Hide the feedback div
-    
+
     // Remove choices/options, presented as buttons, before displaying new ones
     removeButtons();
 
@@ -86,40 +90,40 @@ function displayQuestion(i) {
     // Set title
     questionTitle.textContent = quizElement.question;
 
-      
-        // Render a new li for each todo
-        for (var i = 0; i < quizElement.options.length; i++) {
-          var option = quizElement.options[i];
-          var button = document.createElement("button");
-          button.textContent = (i+1) + ". " + option;
-          choicesDiv.appendChild(button);
-        }
-      
-/*
 
+    // Render a new li for each todo
+    for (var i = 0; i < quizElement.options.length; i++) {
+        var option = quizElement.options[i];
+        var button = document.createElement("button");
+        button.textContent = (i + 1) + ". " + option;
+        choicesDiv.appendChild(button);
+    }
 
-    // Add options text to buttons
-    button1.innerText = quizElement.options[0];
-    button2.innerText = quizElement.options[1];
-    button3.innerText = quizElement.options[2];
-    button4.innerText = quizElement.options[3];
-
-    // Append buttons to list items
-    li1.appendChild(button1);
-    li2.appendChild(button2);
-    li3.appendChild(button3);
-    li4.appendChild(button4);
-
-    // Append list items to list element
-    listEl.appendChild(li1);
-    listEl.appendChild(li2);
-    listEl.appendChild(li3);
-    listEl.appendChild(li4);
-
-    // Append list element to choice Div
-    choicesDiv.appendChild(listEl);
-
-    */
+    /*
+    
+    
+        // Add options text to buttons
+        button1.innerText = quizElement.options[0];
+        button2.innerText = quizElement.options[1];
+        button3.innerText = quizElement.options[2];
+        button4.innerText = quizElement.options[3];
+    
+        // Append buttons to list items
+        li1.appendChild(button1);
+        li2.appendChild(button2);
+        li3.appendChild(button3);
+        li4.appendChild(button4);
+    
+        // Append list items to list element
+        listEl.appendChild(li1);
+        listEl.appendChild(li2);
+        listEl.appendChild(li3);
+        listEl.appendChild(li4);
+    
+        // Append list element to choice Div
+        choicesDiv.appendChild(listEl);
+    
+        */
 
     return (quizElement);
 
@@ -129,7 +133,7 @@ function removeButtons() {
     var choicesPresented = document.getElementById('choices');
     while (choicesPresented.firstChild) {
         choicesPresented.removeChild(choicesPresented.firstChild);
-      }
+    }
     return;
 }
 
@@ -145,6 +149,7 @@ choicesDiv.addEventListener("click", function (event) {
     }
     else {
         console.log("Incorrect answer");
+        timerCount = timerCount - 10;
         //TODO: Make visible the feedback div
     }
 
@@ -166,3 +171,19 @@ choicesDiv.addEventListener("click", function (event) {
     }
 
 });
+
+function startTimer() {
+    // Sets timer
+    timer = setInterval(function () {
+        timerCount--;
+        timerEl.textContent = timerCount;
+        if (timerCount >= 0) {
+            // Tests if win condition is met
+        }
+        // Tests if time has run out
+        if (timerCount === 0) {
+            // Show the highscores page
+            location.replace("./highscores.html")
+        }
+    }, 1000);
+}
