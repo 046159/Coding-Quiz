@@ -1,4 +1,5 @@
 var startQuizButton = document.querySelector("#start");
+var submitButton = document.querySelector("#submit");
 var questionsDiv = document.querySelector("#questions");
 var questionTitle = document.querySelector("#question-title");
 var choicesDiv = document.querySelector("#choices");
@@ -6,6 +7,7 @@ var startScreenDiv = document.querySelector("#start-screen");
 var feedbackDiv = document.querySelector("#feedback");
 var endScreenDiv = document.querySelector("#end-screen");
 var finalScoreEl = document.querySelector("#final-score");
+var initialsEl = document.querySelector("#initials");
 
 var score = 0;
 
@@ -22,6 +24,8 @@ var button2 = document.createElement("button");
 var button3 = document.createElement("button");
 var button4 = document.createElement("button");
 
+var scoresArray = [];
+
 var displayedQuestions = 0;
 
 // Function for when Start Quiz Button is pressed
@@ -31,6 +35,25 @@ startQuizButton.addEventListener("click", function () {
     startScreenDiv.classList.add("hide");
     questionsDiv.classList.remove("hide");
 
+});
+
+// Add event listener for Submit button
+submitButton.addEventListener("click", function (event) {
+
+    // Read initials from screen
+    var initials = initialsEl.value;
+
+    // Create an object to store later
+    var scoreObject = {
+        Initials: initials,
+        Score: score,
+    }
+
+    // Add score to array of scores
+    scoresArray.push(scoreObject);
+    
+    // Log test results into localStorage
+    localStorage.setItem("scores", JSON.stringify(scoresArray));
 });
 
 var quizQuestion = displayQuestion(displayedQuestions);
@@ -89,12 +112,10 @@ choicesDiv.addEventListener("click", function (event) {
         //Hide the questions and feedback div
         questionsDiv.classList.add("hide");
         feedbackDiv.classList.add("hide");
-        
+
         //Unhide the end-screen div
         endScreenDiv.classList.remove("hide");
         finalScoreEl.textContent = score;
-
-        //TODO: Log test results into localStorage
     }
     else {
         console.log("Will request another question");
