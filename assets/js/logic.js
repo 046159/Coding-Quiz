@@ -1,3 +1,8 @@
+/* -------------------------------------------------------------------------- */
+/*                              Declare variables                             */
+/* -------------------------------------------------------------------------- */
+
+/* ----------------------------- Query Selectors ---------------------------- */
 var startQuizButton = document.querySelector("#start");
 var submitButton = document.querySelector("#submit");
 var questionsDiv = document.querySelector("#questions");
@@ -10,15 +15,17 @@ var finalScoreEl = document.querySelector("#final-score");
 var initialsEl = document.querySelector("#initials");
 var timerEl = document.querySelector("#time");
 
-var score = 0;
+/* ----------------------------- Other variables ---------------------------- */
+var score = 0; // Keep track of the score
 var timer; // Quiz timer
-var feedbackTimer; // Feedback timer
-var timerCount = 75;
-var feedbackTimerCount = 1;
+var feedbackTimer; // Feedback timer for displaying feedback
+var timerCount = 75; // Timer for overall quiz (seconds)
+var feedbackTimerCount = 1; // Timer for displaying feedback (seconds)
+var quizQuestion; // Will hold a single quiz question that needs to be shown
+var displayedQuestions = 0; // Number of questions displayed
 
-// Declare a global variable that will hold a quiz question
-var quizQuestion;
-
+//TODO: Remove the commented out code below
+/*
 // Create unordered list element and list items for the choices
 var listEl = document.createElement("ul");
 var li1 = document.createElement("li");
@@ -31,104 +38,67 @@ var button1 = document.createElement("button");
 var button2 = document.createElement("button");
 var button3 = document.createElement("button");
 var button4 = document.createElement("button");
+*/
 
-var displayedQuestions = 0;
-
-// Function for when Start Quiz Button is pressed
+/* -------------------------------------------------------------------------- */
+/*               Event Listener for when Start Quiz Button is pressed         */
+/* -------------------------------------------------------------------------- */
 startQuizButton.addEventListener("click", function () {
-
-    // Hide Start Screen Div and Unhide Questions Div
-    startScreenDiv.classList.add("hide");
-    questionsDiv.classList.remove("hide");
-
-    startTimer();
-
-    quizQuestion = displayQuestion(displayedQuestions);
-
+    startScreenDiv.classList.add("hide"); // Hide the Start Screen
+    questionsDiv.classList.remove("hide"); // Show the Questions Div
+    startTimer(); // Start the quiz timer
+    quizQuestion = displayQuestion(displayedQuestions); // Display the first question
 });
 
-// Add event listener for Submit button
+/* -------------------------------------------------------------------------- */
+/*                      Event Listener for Submit button                      */
+/* -------------------------------------------------------------------------- */
 submitButton.addEventListener("click", function (event) {
+    var initials = initialsEl.value; // Read initials from screen
 
-    // Read initials from screen
-    var initials = initialsEl.value;
-
-    // Create an object to store later
+    /* --------------------- Create an object to store later -------------------- */
     var scoreObject = {
         Initials: initials,
         Score: score,
     }
 
-    // Add score to array of scores
+    /* ------------------- Add score object to array of scores ------------------ */
     var itemsInLocalStorage = localStorage.getItem("scores");
-    console.log(itemsInLocalStorage);
     var scoresArray = JSON.parse(itemsInLocalStorage);
     if (scoresArray === null) {
         var scoresArray = [];
     }
-    console.log("scoresArray");
-
     scoresArray.push(scoreObject);
 
-    // Log test results into localStorage
+    /* ------------------- Log test results into localStorage ------------------- */
     localStorage.setItem("scores", JSON.stringify(scoresArray));
 
-    // Show the highscores page
+    /* ------------------------ Show the highscores page ------------------------ */
     location.replace("./highscores.html")
-
 });
 
-
+/* -------------------------------------------------------------------------- */
+/*                A function to display an individual question                */
+/* -------------------------------------------------------------------------- */
 function displayQuestion(i) {
+    removeButtons(); // Remove previous choices (presented as buttons)
+    var quizElement = quiz[i]; // Get the question from the quiz array
+    questionTitle.textContent = quizElement.question; // Set question
 
-    // Remove choices/options, presented as buttons, before displaying new ones
-    removeButtons();
-
-    var quizElement = quiz[i];
-    console.log(quizElement);
-
-    // Set title
-    questionTitle.textContent = quizElement.question;
-
-
-    // Render a new li for each todo
+    /* ------------------- Render a new button for each choice ------------------ */
     for (var i = 0; i < quizElement.options.length; i++) {
         var option = quizElement.options[i];
-        var button = document.createElement("button");
-        button.textContent = (i + 1) + ". " + option;
-        choicesDiv.appendChild(button);
+        var button = document.createElement("button"); // Create the button
+        button.textContent = (i + 1) + ". " + option; // Prefix choice with a number
+        choicesDiv.appendChild(button); // Append the button
     }
 
-    /*
-    
-    
-        // Add options text to buttons
-        button1.innerText = quizElement.options[0];
-        button2.innerText = quizElement.options[1];
-        button3.innerText = quizElement.options[2];
-        button4.innerText = quizElement.options[3];
-    
-        // Append buttons to list items
-        li1.appendChild(button1);
-        li2.appendChild(button2);
-        li3.appendChild(button3);
-        li4.appendChild(button4);
-    
-        // Append list items to list element
-        listEl.appendChild(li1);
-        listEl.appendChild(li2);
-        listEl.appendChild(li3);
-        listEl.appendChild(li4);
-    
-        // Append list element to choice Div
-        choicesDiv.appendChild(listEl);
-    
-        */
-
     return (quizElement);
-
 }
 
+/* -------------------------------------------------------------------------- */
+/*         A function to remove previous choices from being displayed         */
+/* -------------------------------------------------------------------------- */
 function removeButtons() {
     var choicesPresented = document.getElementById('choices');
     while (choicesPresented.firstChild) {
@@ -137,68 +107,70 @@ function removeButtons() {
     return;
 }
 
+/* -------------------------------------------------------------------------- */
+/*    Event listener for when a choice is selected in response to question    */
+/* -------------------------------------------------------------------------- */
 choicesDiv.addEventListener("click", function (event) {
-    var chosenOptionText = event.srcElement.innerHTML;
-    chosenOptionText = chosenOptionText.substr(3);
-    console.log(chosenOptionText);
+
+    /* ----------------- Check if selection matches with answer ----------------- */
+    var chosenOptionText = event.srcElement.innerHTML; // Option selected
+    chosenOptionText = chosenOptionText.substr(3); // Discard the number prefix e.g. "1. "
     var correctAnswerText = quizQuestion.options[quizQuestion.answer];
     if (chosenOptionText === correctAnswerText) {
-        console.log("Correct answer");
         displayFeedback("Correct!");
         score++;
     }
     else {
-        console.log("Incorrect answer");
         displayFeedback("Wrong!");
         timerCount = timerCount - 10;
     }
 
-    // console.log(feedbackDiv.textContent);
-
+    /* ---------------------- Check if reached end of quiz ---------------------- */
     if (displayedQuestions === (quiz.length - 1)) {
         console.log("Have asked all the questions.");
-
-        //Hide the questions div
         questionsDiv.classList.add("hide");
 
-        // Stop the timer
+        /* ----------------------------- Stop the timer ----------------------------- */
         clearInterval(timer);
         timerEl.textContent = 0;
 
-        //Unhide the end-screen div
+        /* ---------------- Unhide the end-screen div and show score ---------------- */
         endScreenDiv.classList.remove("hide");
         finalScoreEl.textContent = score;
     }
     else {
         console.log("Will request another question");
         displayedQuestions++;
-        quizQuestion = displayQuestion(displayedQuestions);
+        quizQuestion = displayQuestion(displayedQuestions); // Display next question
     }
 
 });
 
+/* -------------------------------------------------------------------------- */
+/*                           Function for quiz timer                          */
+/* -------------------------------------------------------------------------- */
 function startTimer() {
-    // Sets timer
     timer = setInterval(function () {
         timerCount--;
         timerEl.textContent = timerCount;
-        if (timerCount >= 0) {
-            // Tests if win condition is met
-        }
-        // Tests if time has run out
         if (timerCount === 0) {
-            // Show the highscores page
-            location.replace("./highscores.html")
+            location.replace("./highscores.html") // End quiz if timer has run out
         }
     }, 1000);
 }
 
+/* -------------------------------------------------------------------------- */
+/*                   Function to display feedback on screen                   */
+/* -------------------------------------------------------------------------- */
 function displayFeedback(displayText) {
     feedbackDiv.classList.remove("hide");
     feedbackDiv.textContent = displayText;
-    startFeedbackTimer();
+    startFeedbackTimer(); // Display the feedback for required number of seconds
 }
 
+/* -------------------------------------------------------------------------- */
+/*               Function to start timer on displaying feedback               */
+/* -------------------------------------------------------------------------- */
 function startFeedbackTimer() {
     feedbackTimer = setInterval(function () {
         console.log(feedbackTimerCount);
