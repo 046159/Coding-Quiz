@@ -3,17 +3,22 @@ var clearButtonEl = document.querySelector("#clear");
 
 var scoresString = localStorage.getItem("scores");
 var scoresArrayRetrieved = JSON.parse(scoresString);
-scoresArrayRetrieved.sort((a, b) => parseFloat(b.Score) - parseFloat(a.Score));
+if (scoresArrayRetrieved != null) {
+    scoresArrayRetrieved.sort((a, b) => parseFloat(b.Score) - parseFloat(a.Score));
 
-for (let i = 0; i < scoresArrayRetrieved.length; i++) {
-    var initials = scoresArrayRetrieved[i].Initials;
-    var score = scoresArrayRetrieved[i].Score;
-    var listItem = document.createElement("li");
-    listItem.innerText = initials + " - " + score;
-    highScoresEl.appendChild(listItem);
+    for (let i = 0; i < scoresArrayRetrieved.length; i++) {
+        var initials = scoresArrayRetrieved[i].Initials;
+        var score = scoresArrayRetrieved[i].Score;
+        var listItem = document.createElement("li");
+        listItem.innerText = initials + " - " + score;
+        highScoresEl.appendChild(listItem);
+    }
 }
 
 clearButtonEl.addEventListener("click", function (event) {
     localStorage.removeItem("scores");
-    window.location.reload();
+    var scoresPresented = document.getElementById('highscores');
+    while (scoresPresented.firstChild) {
+        scoresPresented.removeChild(scoresPresented.firstChild);
+    }
 })

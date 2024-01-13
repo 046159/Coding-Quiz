@@ -11,6 +11,9 @@ var initialsEl = document.querySelector("#initials");
 
 var score = 0;
 
+// Declare a global variable that will hold a quiz question
+var quizQuestion;
+
 // Create unordered list element and list items for the choices
 var listEl = document.createElement("ul");
 var li1 = document.createElement("li");
@@ -32,6 +35,9 @@ startQuizButton.addEventListener("click", function () {
     // Hide Start Screen Div and Unhide Questions Div
     startScreenDiv.classList.add("hide");
     questionsDiv.classList.remove("hide");
+
+
+    quizQuestion = displayQuestion(displayedQuestions);
 
 });
 
@@ -66,16 +72,31 @@ submitButton.addEventListener("click", function (event) {
 
 });
 
-var quizQuestion = displayQuestion(displayedQuestions);
 
 function displayQuestion(i) {
 
     //TODO: Hide the feedback div
+    
+    // Remove choices/options, presented as buttons, before displaying new ones
+    removeButtons();
 
     var quizElement = quiz[i];
+    console.log(quizElement);
 
     // Set title
     questionTitle.textContent = quizElement.question;
+
+      
+        // Render a new li for each todo
+        for (var i = 0; i < quizElement.options.length; i++) {
+          var option = quizElement.options[i];
+          var button = document.createElement("button");
+          button.textContent = (i+1) + ". " + option;
+          choicesDiv.appendChild(button);
+        }
+      
+/*
+
 
     // Add options text to buttons
     button1.innerText = quizElement.options[0];
@@ -98,13 +119,24 @@ function displayQuestion(i) {
     // Append list element to choice Div
     choicesDiv.appendChild(listEl);
 
+    */
+
     return (quizElement);
 
 }
 
+function removeButtons() {
+    var choicesPresented = document.getElementById('choices');
+    while (choicesPresented.firstChild) {
+        choicesPresented.removeChild(choicesPresented.firstChild);
+      }
+    return;
+}
+
 choicesDiv.addEventListener("click", function (event) {
-    console.log("Entered the event listener for choosing option");
     var chosenOptionText = event.srcElement.innerHTML;
+    chosenOptionText = chosenOptionText.substr(3);
+    console.log(chosenOptionText);
     var correctAnswerText = quizQuestion.options[quizQuestion.answer];
     if (chosenOptionText === correctAnswerText) {
         console.log("Correct answer");
