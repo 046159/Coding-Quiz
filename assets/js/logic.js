@@ -24,8 +24,6 @@ var button2 = document.createElement("button");
 var button3 = document.createElement("button");
 var button4 = document.createElement("button");
 
-var scoresArray = [];
-
 var displayedQuestions = 0;
 
 // Function for when Start Quiz Button is pressed
@@ -50,10 +48,22 @@ submitButton.addEventListener("click", function (event) {
     }
 
     // Add score to array of scores
+    var itemsInLocalStorage = localStorage.getItem("scores");
+    console.log(itemsInLocalStorage);
+    var scoresArray = JSON.parse(itemsInLocalStorage);
+    if (scoresArray === null) {
+        var scoresArray = [];
+    }
+    console.log("scoresArray");
+
     scoresArray.push(scoreObject);
     
     // Log test results into localStorage
     localStorage.setItem("scores", JSON.stringify(scoresArray));
+
+    // Show the highscores page
+    location.replace("./highscores.html")    
+
 });
 
 var quizQuestion = displayQuestion(displayedQuestions);
