@@ -24,7 +24,7 @@ var score = 0; // Keep track of the score
 var timer; // Quiz timer
 var feedbackTimer; // Feedback timer for displaying feedback
 var timerCount = 75; // Timer for overall quiz (seconds)
-var feedbackTimerCount = 1; // Timer for displaying feedback (seconds)
+var feedbackTimerCount = 2; // Timer for displaying feedback (seconds)
 var quizQuestion; // Will hold a single quiz question that needs to be shown
 var displayedQuestions = 0; // Number of questions displayed
 
@@ -46,7 +46,12 @@ submitButton.addEventListener("click", function (event) {
 
     /* ----------------------- Don't allow empty initials ----------------------- */
     if (initials === "") {
-        displayFeedback("Please enter your initials before submitting")
+        displayFeedback("Please enter your initials before submitting");
+        return;
+    }
+    /* ----------------------- Don't allow more than 3 characters --------------- */
+    if (initials.length > 3) {
+        displayFeedback("Initials cannot be longer than 3 characters");
         return;
     }
 
